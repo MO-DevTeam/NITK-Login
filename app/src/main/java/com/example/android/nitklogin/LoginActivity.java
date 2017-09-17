@@ -7,10 +7,12 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -21,16 +23,21 @@ public class LoginActivity extends AppCompatActivity {
 
     public WebView webv ;
     private boolean pageLogin = false;
+    final String url = "http://10.10.54.4:8090/";
+    private String username = "";
+    private String password = "";
+    FloatingActionButton refresh ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SharedPreferences sharedPref = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        webv = (WebView) findViewById(R.id.webv);
 
-        final String username = sharedPref.getString("username", "");
-        final String password = sharedPref.getString("password", "");
+        SharedPreferences sharedPref = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", "");
+        password = sharedPref.getString("password", "");
 
         // got to sign in if not saved
         if(username.equals("") || password.equals(""))
@@ -41,25 +48,40 @@ public class LoginActivity extends AppCompatActivity {
 //            startActivity(main);
             loginPage();
         }
-
         else {
+            login();
+        }
 
-            // load web view
-            String url = "http://10.10.54.4:8090/";
+        refresh = (FloatingActionButton) findViewById(R.id.ref);
 
-            webv = (WebView) findViewById(R.id.webv);
-            webv.getSettings().setDomStorageEnabled(true);
-            webv.loadUrl(url);
-            webv.getSettings().setJavaScriptEnabled(true);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        login();
+                    }
+                }, 2000);
+            }
+        });
 
-            webv.setWebViewClient(new WebViewClient(){
+    }
 
+    // load web view and auto fill
+    public void login(){
+
+        // load web view
+        webv.getSettings().setDomStorageEnabled(true);
+        webv.loadUrl(url);
+        webv.getSettings().setJavaScriptEnabled(true);
+
+        webv.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageFinished(WebView webv, String url){
-
                 super.onPageFinished(webv, url);
-
-
                 // perform auto login using js
                 String js = "javascript: document.getElementsByName('username')[0].value='" + username + "';" +
                         "var two = document.getElementsByName('password');" +
@@ -68,29 +90,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(Build.VERSION.SDK_INT >= 19){
 
-                webv.evaluateJavascript(js, new ValueCallback<String>() {
+                    webv.evaluateJavascript(js, new ValueCallback<String>() {
 
-                    @Override
-                    public void onReceiveValue(String s) {
-                        pageLogin = true;
-                    }
-                });}
+                        @Override
+                        public void onReceiveValue(String s) {
+                            pageLogin = true;
+                        }
+                    });}
                 else{
                     webv.loadUrl(js);
                     pageLogin = true;
-
                 }
-
             }
-
             // handle ssh error
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 handler.proceed();
             }
         });
-        }
-
     }
 
     // go to login page
@@ -101,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(main);
     }
 
+    // log out user
     public void logout(){
 
         if(pageLogin){
