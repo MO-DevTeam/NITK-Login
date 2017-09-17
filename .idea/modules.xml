@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/NITK-Login.iml" filepath="$PROJECT_DIR$/NITK-Login.iml" />
       <module fileurl="file://$PROJECT_DIR$/NITKLogin.iml" filepath="$PROJECT_DIR$/NITKLogin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

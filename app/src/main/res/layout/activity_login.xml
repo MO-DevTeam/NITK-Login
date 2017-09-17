@@ -21,15 +21,15 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
 
-    <TextView
-        android:id="@+id/change"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Change Login Details"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:paddingTop="12dp"
-        android:paddingBottom="14dp"
-        android:onClick="loginPage"/>
+    <!--<TextView-->
+        <!--android:id="@+id/change"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Change Login Details"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="24sp"-->
+        <!--android:paddingTop="12dp"-->
+        <!--android:paddingBottom="14dp"-->
+        <!--android:onClick="loginPage"/>-->
 
 </LinearLayout>
