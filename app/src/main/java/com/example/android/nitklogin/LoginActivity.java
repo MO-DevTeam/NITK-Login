@@ -22,7 +22,7 @@ import android.widget.Toast;
 public class LoginActivity extends AppCompatActivity {
 
     public WebView webv ;
-    private boolean pageLogin = false;
+    private boolean pageLogin = true;
     final String url = "http://10.10.54.4:8090/";
     private String username = "";
     private String password = "";
@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         username = sharedPref.getString("username", "");
         password = sharedPref.getString("password", "");
 
-        // got to sign in if not saved
+        // go to sign in if not saved
         if(username.equals("") || password.equals(""))
         {
             Toast.makeText(this, "Enter Login Details", Toast.LENGTH_LONG).show();
@@ -83,10 +83,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onPageFinished(WebView webv, String url){
                 super.onPageFinished(webv, url);
                 // perform auto login using js
-                String js = "javascript: document.getElementsByName('username')[0].value='" + username + "';" +
-                        "var two = document.getElementsByName('password');" +
-                        "two[0].value = '" + password + "';" +
-                        "var three = document.getElementById('logincaption').click();";
+                String js = "javascript: document.getElementById('username').value='" + username + "';" +
+                        "var two = document.getElementById('password');" +
+                        "two.value = '" + password + "';" +
+                        "var three = document.getElementById('loginbutton').click();";
 
                 if(Build.VERSION.SDK_INT >= 19){
 
@@ -122,14 +122,14 @@ public class LoginActivity extends AppCompatActivity {
     public void logout(){
 
         if(pageLogin){
-            String js = "javascript: var three = document.getElementById('logincaption').click();";
+            String js = "javascript: var three = document.getElementById('loginbutton').click();";
 
             if(Build.VERSION.SDK_INT >= 19){
 
                 webv.evaluateJavascript(js, new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(String s) {
-
+                        pageLogin = false;
                     }
                 });}
             else{
@@ -175,6 +175,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if (!pageLogin){
+            if(menu.findItem(R.id.logout)!=null){
+                menu.removeItem(R.id.logout);
+            }
+        }
+        else {
+            if(menu.findItem(R.id.logout)==null){
+                menu.add(Menu.NONE, R.id.logout, Menu.FIRST, "Logout");
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
 }

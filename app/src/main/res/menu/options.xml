@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/cdetails"
+        android:title="@string/change_credentials"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/logout"
         android:title="@string/logout"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/cdetails"
-        android:title="@string/change_credentials"
-        app:showAsAction="never"/>
 </menu>
